@@ -14,6 +14,10 @@ namespace Textris
         /// 총 완성시킨 점수(행수;라인수) : 카운트
         /// </summary>
         private static int points;
+        /// <summary>
+        /// Tetris Game 클래스
+        /// </summary>
+        private static Tetris t;
 
         static void Main(string[] args)
         {
@@ -49,6 +53,54 @@ a키를 누르면 시작됩니다.
             #endregion
 
             #region 게임 진행
+
+            //게임 클래스 초기화 영역
+            t = new Tetris();   //테트리스 클래스의 인스턴스 생성
+            t.GameStart();
+
+            #region 키보드 처리기
+            //키보드 처리기
+            while (t.isRunning)
+            {
+                if (Console.KeyAvailable)                                                                           //C에서는 kbhit()
+                {
+                    // 키보드 조작
+                    switch (Console.ReadKey(true).Key) //Console.ReadKey(true)에서 true값을 주면 콘솔창에 누른키 표시 X //C : getch()
+                    {
+                        case ConsoleKey.A:
+                            Console.WriteLine("시계 방향으로 3번 돌리기");
+                            break;
+                        case ConsoleKey.S:
+                            Console.WriteLine("시계 방향으로 돌리기");
+                            break;
+                        case ConsoleKey.G:
+                            Console.WriteLine("완성된 블록 보기 켜고 끄기");
+                            break;
+                        case ConsoleKey.N:
+                            Console.WriteLine("다음 블록 미리보기 켜고 끄기");
+                            break;
+                        case ConsoleKey.Escape:
+                            //Console.WriteLine("게임 종료");
+                            t.GameEnd();
+                            break;
+                        case ConsoleKey.UpArrow:
+                            Console.WriteLine("블록을 아래로 떨어뜨리기");
+                            break;
+                        case ConsoleKey.DownArrow:
+                            Console.WriteLine("블록을 아래로 1칸 내리기");
+                            break;
+                        case ConsoleKey.LeftArrow:
+                            Console.WriteLine("블록을 왼쪽으로 이동");
+                            break;
+                        case ConsoleKey.RightArrow:
+                            Console.WriteLine("블록을 오른쪽으로 이동");
+                            break;
+                        default:
+                            break;
+                    } 
+                }
+            } 
+            #endregion
 
 
             #endregion
