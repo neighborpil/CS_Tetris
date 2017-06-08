@@ -5,7 +5,11 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using static System.Console;
+/*
+[Textris]
+ - 영역 : 가로 10칸, 세로 20칸 점수는 (1, 13)
 
+*/
 namespace Textris
 {
     class Program
@@ -55,7 +59,8 @@ a키를 누르면 시작됩니다.
             #region 게임 진행
 
             //게임 클래스 초기화 영역
-            t = new Tetris();   //테트리스 클래스의 인스턴스 생성
+            //t = new Tetris();   //테트리스 클래스의 인스턴스 생성
+            t = new Tetris(10, 20);   //테트리스 클래스의 인스턴스 생성
             t.GameStart();
 
             #region 키보드 처리기
