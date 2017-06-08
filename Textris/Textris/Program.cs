@@ -103,7 +103,9 @@ a키를 누르면 시작됩니다.
                             break;
                         default:
                             break;
-                    } 
+                    }
+                    //현재 키값에 해당하는 블록을 그리기
+                    DrawField();
                 }
             } 
             #endregion
@@ -161,6 +163,32 @@ ESC 키를 누르면 종료합니다.
             // 프로그램 종료
             return; 
             #endregion
+        }
+
+        private static void DrawField()
+        {
+            // 현재 콘솔 내의 커서 위치
+            int posX = Console.CursorLeft;
+            int posY = Console.CursorTop;
+
+            //점수 출력
+            Console.CursorLeft = 13;
+            Console.CursorTop = 1;
+            Console.WriteLine($"점수 : {points}");
+
+            //원래 위치로 돌아오기
+            Console.SetCursorPosition(posX, posY);
+
+            블록그리기();
+
+            //다시 처음으로
+            Console.SetCursorPosition(posX, posY);
+        }
+
+        private const string BLOCK = "b";
+        private static void 블록그리기()
+        {
+            WriteColorMessage(BLOCK, ConsoleColor.Blue);
         }
 
         #region WriteColorMessage : 특정 전경색을 기반으로 텍스트/블록 출력
