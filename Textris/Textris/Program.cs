@@ -68,10 +68,12 @@ a키를 누르면 시작됩니다.
                     switch (Console.ReadKey(true).Key) //Console.ReadKey(true)에서 true값을 주면 콘솔창에 누른키 표시 X //C : getch()
                     {
                         case ConsoleKey.A:
-                            Console.WriteLine("시계 방향으로 3번 돌리기");
+                            //Console.WriteLine("시계 방향으로 3번 돌리기");
+                            t.KeyInput(Tetris.Key.TurnLeft);
                             break;
                         case ConsoleKey.S:
-                            Console.WriteLine("시계 방향으로 돌리기");
+                            //Console.WriteLine("시계 방향으로 돌리기");
+                            t.KeyInput(Tetris.Key.TurnRight);
                             break;
                         case ConsoleKey.G:
                             Console.WriteLine("완성된 블록 보기 켜고 끄기");
@@ -84,16 +86,20 @@ a키를 누르면 시작됩니다.
                             t.GameEnd();
                             break;
                         case ConsoleKey.UpArrow:
-                            Console.WriteLine("블록을 아래로 떨어뜨리기");
+                            //Console.WriteLine("블록을 아래로 떨어뜨리기");
+                            t.KeyInput(Tetris.Key.Up);
                             break;
                         case ConsoleKey.DownArrow:
-                            Console.WriteLine("블록을 아래로 1칸 내리기");
+                            //Console.WriteLine("블록을 아래로 1칸 내리기");
+                            t.KeyInput(Tetris.Key.Down);
                             break;
                         case ConsoleKey.LeftArrow:
-                            Console.WriteLine("블록을 왼쪽으로 이동");
+                            //Console.WriteLine("블록을 왼쪽으로 이동");
+                            t.KeyInput(Tetris.Key.Left);
                             break;
                         case ConsoleKey.RightArrow:
-                            Console.WriteLine("블록을 오른쪽으로 이동");
+                            //Console.WriteLine("블록을 오른쪽으로 이동");
+                            t.KeyInput(Tetris.Key.Right);
                             break;
                         default:
                             break;

@@ -25,6 +25,19 @@ namespace Textris
         }
 
         /// <summary>
+        /// Tetris 클래스에서 사용 가능한 키값 열거형
+        /// </summary>
+        public enum Key
+        {
+            Up,
+            Down,
+            Left,
+            Right,
+            TurnRight,
+            TurnLeft
+        }
+
+        /// <summary>
         /// 게임 시작하고 블록을 출력하기
         /// </summary>
         public void GameStart()
@@ -38,6 +51,40 @@ namespace Textris
         public void GameEnd()
         {
             this.isInGame = false;
+        }
+
+        /// <summary>
+        /// 메인에서 특정 키값을 눌렀을 때 처리해야할 로직 구현
+        /// </summary>
+        /// <param name="key"></param>
+        public void KeyInput(Key key)
+        {
+            if (isInGame)
+            {
+                switch (key)
+                {
+                    case Key.Up:
+                        Console.WriteLine("Tetris 클래스에서의 Up");
+                        break;
+                    case Key.Down:
+                        Console.WriteLine("Tetris 클래스에서의 Down");
+                        break;
+                    case Key.Left:
+                        Console.WriteLine("Tetris 클래스에서의 Left");
+                        break;
+                    case Key.Right:
+                        Console.WriteLine("Tetris 클래스에서의 Right");
+                        break;
+                    case Key.TurnRight:
+                        Console.WriteLine("Tetris 클래스에서의 TurnRight");
+                        break;
+                    case Key.TurnLeft:
+                        Console.WriteLine("Tetris 클래스에서의 TurnLeft");
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
     }
 }
