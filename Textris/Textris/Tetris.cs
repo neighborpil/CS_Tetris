@@ -106,26 +106,24 @@ namespace Textris
                 switch (key)
                 {
                     case Key.Up:
-                        //Console.WriteLine("Tetris 클래스에서의 Up");
-                        Console.CursorTop--;
                         break;
                     case Key.Down:
-                        //Console.WriteLine("Tetris 클래스에서의 Down");
-                        Console.CursorTop++;
                         break;
                     case Key.Left:
-                        //Console.WriteLine("Tetris 클래스에서의 Left");
-                        Console.CursorLeft--;
+                        if (posX > 0)
+                        {
+                            posX--; 
+                        }
                         break;
                     case Key.Right:
-                        //Console.WriteLine("Tetris 클래스에서의 Right");
-                        Console.CursorLeft++;
+                        if (posX < container.GetUpperBound(0))
+                        {
+                            posX++;
+                        }
                         break;
                     case Key.TurnRight:
-                        //Console.WriteLine("Tetris 클래스에서의 TurnRight");
                         break;
                     case Key.TurnLeft:
-                        //Console.WriteLine("Tetris 클래스에서의 TurnLeft");
                         break;
                     default:
                         break;

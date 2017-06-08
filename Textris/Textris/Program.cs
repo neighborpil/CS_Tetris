@@ -51,7 +51,11 @@ a키를 누르면 시작됩니다.
 ====================================
             ");
 
-            Console.ReadKey(true);
+            while(Console.ReadKey(true).Key != ConsoleKey.A)
+            {
+                if (Console.ReadKey(true).Key == ConsoleKey.A)
+                    break;
+            }
 
             Console.Clear();
             #endregion
@@ -184,16 +188,55 @@ ESC 키를 누르면 종료합니다.
             //원래 위치로 돌아오기
             Console.SetCursorPosition(posX, posY);
 
-            블록그리기();
+            WriteArray(new int[20, 10], true);
 
             //다시 처음으로
             Console.SetCursorPosition(posX, posY);
         }
 
         private const string BLOCK = "b";
-        private static void 블록그리기()
+        private const string BOX = "|";
+        private const string EMPTY = " ";
+        /// <summary>
+        /// 콘솔에 2D 배열을 출력
+        /// </summary>
+        /// <param name="arr">넘겨온 2차원 배열 : 블록이 존재함</param>
+        /// <param name="writeBorder">테두리를 그릴건지 여부</param>
+        private static void WriteArray(int[,] arr, bool writeBorder)
         {
-            WriteColorMessage(BLOCK, ConsoleColor.Blue);
+            int x = Console.CursorLeft; // X좌표
+            for (int i = 0; i <= arr.GetUpperBound(0); i++)
+            {
+                if (writeBorder)
+                {
+                    Console.Write(BOX);
+                }
+                for (int j = 0; j <= arr.GetUpperBound(1); j++)
+                {
+                    // 2차원 배열의 값이 0이 아니면 해당 위치에 블록 출력
+                    Console.Write(EMPTY);
+
+                }
+                if (writeBorder)
+                {
+                    Console.WriteLine(BOX);
+                }
+                else
+                {
+                    Console.WriteLine();
+                }
+
+                Console.CursorLeft = x;
+            }
+            for (int k = 0; k <= arr.GetUpperBound(1) + 2; k++)
+            {
+                if (writeBorder)
+                {
+                    Console.Write(BOX);
+                }
+            }
+
+            //WriteColorMessage(BLOCK, ConsoleColor.Blue);
         }
 
         #region WriteColorMessage : 특정 전경색을 기반으로 텍스트/블록 출력
