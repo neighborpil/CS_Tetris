@@ -28,7 +28,24 @@ namespace Textris
         private const string BOX = "|";
         private const string EMPTY = " ";
         private const string ACTIVE = "A";
-        private const string SHADOW = "S"; 
+        private const string SHADOW = "S";
+        #endregion
+
+        #region 다음 블록 보이기 관련 필드들
+        /// <summary>
+        /// "다음" 블록에 대한 영역 설정 배열 : 클리어
+        /// </summary>
+        private static readonly int[,] clearBlock = new int[,] {
+                { 0, 0, 0, 0 },
+                { 0, 0, 0, 0 },
+                { 0, 0, 0, 0 },
+                { 0, 0, 0, 0 }
+        };
+
+        /// <summary>
+        /// 다음 블록 보이기 여부[y/n]?
+        /// </summary>
+        private static bool showNext; 
         #endregion
 
         static void Main(string[] args)
@@ -70,9 +87,11 @@ a키를 누르면 시작됩니다.
 
             #region 게임 진행
 
-            //게임 클래스 초기화 영역
-            //t = new Tetris();   //테트리스 클래스의 인스턴스 생성
-            t = new Tetris(10, 20); //테트리스 클래스의 인스턴스 생성
+            showNext = true; // 기본으로 다음 블록을 보이기
+
+            // 게임 클래스 초기화 영역
+            // t = new Tetris();   // 테트리스 클래스의 인스턴스 생성
+            t = new Tetris(10, 20); // 테트리스 클래스의 인스턴스 생성
             t.GameStart();
 
             #region 키보드 처리기
@@ -96,7 +115,7 @@ a키를 누르면 시작됩니다.
                             Console.WriteLine("완성된 블록 보기 켜고 끄기");
                             break;
                         case ConsoleKey.N:
-                            Console.WriteLine("다음 블록 미리보기 켜고 끄기");
+                            showNext = !showNext; // true <-> false 토클
                             break;
                         case ConsoleKey.Escape:
                             //Console.WriteLine("게임 종료");
@@ -221,7 +240,26 @@ ESC 키를 누르면 종료합니다.
             arr[18, 8] = 2;
             arr[18, 9] = 2;
 
-            WriteArray(arr, true);
+            WriteArray(arr, true);  //랜덤하게 만들어진 블록 출력
+
+            //다음 블록 미리보기
+            Console.CursorLeft = 13;
+            Console.CursorTop = 3;
+            WriteArray(clearBlock, true); //다음 블록 출력할 부분 클리어
+            if(showNext)
+            {
+                Console.CursorLeft = 14;
+                Console.CursorTop = 4;
+
+                // 다음 블록 샘플 : 실제러는 Tetris 클래스에서 넘겨져 온다
+                int[,] arr2 = new int[2, 2];
+                arr2[0, 0] = 2;
+                arr2[0, 1] = 2;
+                arr2[1, 0] = 2;
+                arr2[1, 1] = 2;
+
+                WriteArray(arr2, false);
+            }
 
             //다시 처음으로
             Console.SetCursorPosition(posX, posY);
