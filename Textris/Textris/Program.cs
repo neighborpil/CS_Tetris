@@ -23,6 +23,14 @@ namespace Textris
         /// </summary>
         private static Tetris t;
 
+        #region 블록 그리기 관련 상수들
+        private const string BLOCK = "B";
+        private const string BOX = "|";
+        private const string EMPTY = " ";
+        private const string ACTIVE = "A";
+        private const string SHADOW = "S"; 
+        #endregion
+
         static void Main(string[] args)
         {
             #region 콘솔 초기화 및 시작 화면 구성 영역
@@ -64,7 +72,7 @@ a키를 누르면 시작됩니다.
 
             //게임 클래스 초기화 영역
             //t = new Tetris();   //테트리스 클래스의 인스턴스 생성
-            t = new Tetris(10, 20);   //테트리스 클래스의 인스턴스 생성
+            t = new Tetris(10, 20); //테트리스 클래스의 인스턴스 생성
             t.GameStart();
 
             #region 키보드 처리기
@@ -118,7 +126,6 @@ a키를 누르면 시작됩니다.
                 }
             } 
             #endregion
-
 
             #endregion
 
@@ -188,15 +195,41 @@ ESC 키를 누르면 종료합니다.
             //원래 위치로 돌아오기
             Console.SetCursorPosition(posX, posY);
 
-            WriteArray(new int[20, 10], true);
+            int[,] arr = new int[20, 10];
+            // 수작업으로 블록 만들기
+            arr[2, 4] = 7;
+            arr[3, 3] = 7;
+            arr[3, 4] = 7;
+            arr[3, 5] = 7;
+
+            // 쉐도우 블록
+            arr[18, 4] = 8;
+            arr[19, 3] = 8;
+            arr[19, 4] = 8;
+            arr[19, 5] = 8;
+
+            //####
+            arr[19, 6] = 1;
+            arr[19, 7] = 1;
+            arr[19, 8] = 1;
+            arr[19, 9] = 1;
+
+            //##
+            //##
+            arr[17, 8] = 2;
+            arr[17, 9] = 2;
+            arr[18, 8] = 2;
+            arr[18, 9] = 2;
+
+            WriteArray(arr, true);
 
             //다시 처음으로
             Console.SetCursorPosition(posX, posY);
         }
 
-        private const string BLOCK = "b";
-        private const string BOX = "|";
-        private const string EMPTY = " ";
+        
+
+        #region WriteArray : 콘솔에 2D 배열을 출력
         /// <summary>
         /// 콘솔에 2D 배열을 출력
         /// </summary>
@@ -214,8 +247,41 @@ ESC 키를 누르면 종료합니다.
                 for (int j = 0; j <= arr.GetUpperBound(1); j++)
                 {
                     // 2차원 배열의 값이 0이 아니면 해당 위치에 블록 출력
-                    Console.Write(EMPTY);
 
+                    switch (arr[i, j])
+                    {
+                        case 1:
+                            WriteColorMessage(BLOCK, ConsoleColor.White);       // ####
+                            break;
+                        case 2:
+                            WriteColorMessage(BLOCK, ConsoleColor.Magenta);     // ##
+                            break;                                              // ##
+                        case 3:
+                            WriteColorMessage(BLOCK, ConsoleColor.Blue);        //   #
+                            break;                                              // ###
+                        case 4:
+                            WriteColorMessage(BLOCK, ConsoleColor.Green);       // #
+                            break;                                              // ####
+                        case 5:
+                            WriteColorMessage(BLOCK, ConsoleColor.Yellow);      //  ##
+                            break;                                              // ##
+                        case 6:
+                            WriteColorMessage(BLOCK, ConsoleColor.Red);         // ##
+                            break; ;                                            //  ##
+                        case 7:  //현재 실행중인 블록
+                            Console.BackgroundColor = ConsoleColor.Red;
+                            WriteColorMessage(ACTIVE, ConsoleColor.Cyan);   //##
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            break;
+                        case 8:  //현재 실행중인 블록에 대한 완성된 부분을 보여주는 그림자 블록
+                            Console.BackgroundColor = ConsoleColor.Gray;
+                            WriteColorMessage(EMPTY, ConsoleColor.Gray);   //##
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            break;
+                        default:
+                            Console.Write(EMPTY);
+                            break;
+                    }
                 }
                 if (writeBorder)
                 {
@@ -235,9 +301,9 @@ ESC 키를 누르면 종료합니다.
                     Console.Write(BOX);
                 }
             }
-
             //WriteColorMessage(BLOCK, ConsoleColor.Blue);
-        }
+        } 
+        #endregion
 
         #region WriteColorMessage : 특정 전경색을 기반으로 텍스트/블록 출력
         /// <summary>
