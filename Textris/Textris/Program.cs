@@ -263,8 +263,13 @@ ESC 키를 누르면 종료합니다.
                 // 특정 블록 출력
                 //WriteArray((new Block()).GetBlock(5), false);
 
-                // 랜덤하게 블록 출력
-                WriteArray((new Block()).GetRandomBlock(), false);
+                //// 랜덤하게 블록 출력
+                //WriteArray((new Block()).GetRandomBlock(), false);
+
+                // 특정 블록을 회전시켜 출력 : ####
+                Block b = new Block();
+                //WriteArray(Block.RotateRight(b.GetBlock(2)), false);
+                WriteArray(Block.RotateLeft(b.GetBlock(2)), false);
             }
 
             //다시 처음으로
