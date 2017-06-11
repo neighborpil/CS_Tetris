@@ -29,6 +29,23 @@ namespace Textris
         /// </summary>
         private int[,] container;
 
+
+        /// <summary>
+        /// 현재 움직이고 있는(떨어지고 있는) 블록
+        /// </summary>
+        private int[,] currentBlock = null;
+
+        /// <summary>
+        /// 다음에 나타날 블록
+        /// </summary>
+        private int[,] nextBlock = null;
+
+        /// <summary>
+        /// 블록을 생성하고 관리 : 현재 블록, 다음 블록
+        /// </summary>
+        private Block generatedBlock = new Block();
+
+
         /// <summary>
         /// 게임 실행 상태 표시(읽기전용)
         /// </summary>
@@ -37,6 +54,54 @@ namespace Textris
             get { return isInGame; }
         }
 
+        /// <summary>
+        /// 게임이 실행될 영역에 대한 2차원 배열(완성된 블록과 현재 떨어지고 있는 블록)
+        /// </summary>
+        public int[,] GameFieldData
+        {
+            get
+            {
+                // 수작업으로 블록 만들기
+                int[,] arr = new int[20, 10];
+
+                arr[2, 4] = 7;
+                arr[3, 3] = 7;
+                arr[3, 4] = 7;
+                arr[3, 5] = 7;
+
+                // 쉐도우 블록
+                arr[18, 4] = 8;
+                arr[19, 3] = 8;
+                arr[19, 4] = 8;
+                arr[19, 5] = 8;
+
+                //####
+                arr[19, 6] = 1;
+                arr[19, 7] = 1;
+                arr[19, 8] = 1;
+                arr[19, 9] = 1;
+
+                //##
+                //##
+                arr[17, 8] = 2;
+                arr[17, 9] = 2;
+                arr[18, 8] = 2;
+                arr[18, 9] = 2;
+
+                return arr;
+            }
+        }
+
+        /// <summary>
+        /// 다음에 나타날 다음 블록(읽기 전용)
+        /// </summary>
+        public int[,] Next
+        {
+            get
+            {
+                return nextBlock;
+            }
+        }
         /// <summary>
         /// Tetris 클래스에서 사용 가능한 키값 열거형
         /// </summary>
@@ -74,8 +139,6 @@ namespace Textris
             }
         }
 
-
-
         /// <summary>
         /// 게임 시작하고 블록을 출력하기
         /// </summary>
@@ -85,6 +148,11 @@ namespace Textris
 
             posX = container.GetUpperBound(1) / 2; //10열 / 2 = 5
             posY = 0; // PosY = container.GetUpperBound(0); //20행 맨위
+
+            // 현재 블럭과 다음 블록을 생성
+            currentBlock = nextBlock != null ? nextBlock : generatedBlock.GetRandomBlock();
+            nextBlock = generatedBlock.GetRandomBlock();
+
         }
 
         /// <summary>

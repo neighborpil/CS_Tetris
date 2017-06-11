@@ -200,6 +200,9 @@ ESC 키를 누르면 종료합니다.
             #endregion
         }
 
+        /// <summary>
+        /// 게임 영역에 대한 그리기 함수
+        /// </summary>
         private static void DrawField()
         {
             // 현재 콘솔 내의 커서 위치
@@ -214,33 +217,7 @@ ESC 키를 누르면 종료합니다.
             //원래 위치로 돌아오기
             Console.SetCursorPosition(posX, posY);
 
-            int[,] arr = new int[20, 10];
-            // 수작업으로 블록 만들기
-            arr[2, 4] = 7;
-            arr[3, 3] = 7;
-            arr[3, 4] = 7;
-            arr[3, 5] = 7;
-
-            // 쉐도우 블록
-            arr[18, 4] = 8;
-            arr[19, 3] = 8;
-            arr[19, 4] = 8;
-            arr[19, 5] = 8;
-
-            //####
-            arr[19, 6] = 1;
-            arr[19, 7] = 1;
-            arr[19, 8] = 1;
-            arr[19, 9] = 1;
-
-            //##
-            //##
-            arr[17, 8] = 2;
-            arr[17, 9] = 2;
-            arr[18, 8] = 2;
-            arr[18, 9] = 2;
-
-            WriteArray(arr, true);  //랜덤하게 만들어진 블록 출력
+            WriteArray(t.GameFieldData, true);  //랜덤하게 만들어진 블록 출력
 
             //다음 블록 미리보기
             Console.CursorLeft = 13;
@@ -250,26 +227,8 @@ ESC 키를 누르면 종료합니다.
             {
                 Console.CursorLeft = 14;
                 Console.CursorTop = 4;
-
-                // 다음 블록 샘플 : 실제러는 Tetris 클래스에서 넘겨져 온다
-                //int[,] arr2 = new int[2, 2];
-                //arr2[0, 0] = 2;
-                //arr2[0, 1] = 2;
-                //arr2[1, 0] = 2;
-                //arr2[1, 1] = 2;
-
-                //WriteArray(arr2, false);
-
-                // 특정 블록 출력
-                //WriteArray((new Block()).GetBlock(5), false);
-
-                //// 랜덤하게 블록 출력
-                //WriteArray((new Block()).GetRandomBlock(), false);
-
-                // 특정 블록을 회전시켜 출력 : ####
-                Block b = new Block();
-                //WriteArray(Block.RotateRight(b.GetBlock(2)), false);
-                WriteArray(Block.RotateLeft(b.GetBlock(2)), false);
+                
+                WriteArray(t.Next, false);
             }
 
             //다시 처음으로
