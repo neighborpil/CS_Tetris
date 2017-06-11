@@ -252,13 +252,19 @@ ESC 키를 누르면 종료합니다.
                 Console.CursorTop = 4;
 
                 // 다음 블록 샘플 : 실제러는 Tetris 클래스에서 넘겨져 온다
-                int[,] arr2 = new int[2, 2];
-                arr2[0, 0] = 2;
-                arr2[0, 1] = 2;
-                arr2[1, 0] = 2;
-                arr2[1, 1] = 2;
+                //int[,] arr2 = new int[2, 2];
+                //arr2[0, 0] = 2;
+                //arr2[0, 1] = 2;
+                //arr2[1, 0] = 2;
+                //arr2[1, 1] = 2;
 
-                WriteArray(arr2, false);
+                //WriteArray(arr2, false);
+
+                // 특정 블록 출력
+                //WriteArray((new Block()).GetBlock(5), false);
+
+                // 랜덤하게 블록 출력
+                WriteArray((new Block()).GetRandomBlock(), false);
             }
 
             //다시 처음으로
