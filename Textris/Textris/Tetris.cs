@@ -72,37 +72,59 @@ namespace Textris
         {
             get
             {
-                // 수작업으로 블록 만들기
-                int[,] arr = new int[20, 10];
+                // 컨테이너 개체와 현재 블록 개체를 임시로 복사
+                //int[,] arrCurrentBlock = new int[20, 10];
+                int[,] arrContainer = (int[,])container.Clone(); //매번 클릭할때마다 새로운 컨테이너를 복사해서 써서 잔상 X
+                int[,] arrCurrentBlock = (int[,])currentBlock.Clone();
+                int x = posX; // 블록의 현재 X 좌표
+                int y = posY; // 블록의 현재 Y 좌표
 
-                arr[2, 4] = 7;
-                arr[3, 3] = 7;
-                arr[3, 4] = 7;
-                arr[3, 5] = 7;
+                // 컨테이너에 현재 위치값에 해당하는 현재 블록을 덮어 쓰기
+                //현재 X 좌표 + 현재 블록의 가로 크기 <= 컨테이너의 X 크기
+                //현재 Y 좌표 + 현재 블록의 세로 크기 <= 컨테이너의 Y 크기
+                if ((x + currentBlock.GetUpperBound(1) <= arrContainer.GetUpperBound(1)))
+                {
+                    if (y + currentBlock.GetUpperBound(0) <= arrContainer.GetUpperBound(0))
+                    {
+                        //해당 컨테이너 내에서 블록을 덮어쓰기 : #### 0-3
+                        for (int i = 0; i <= arrCurrentBlock.GetUpperBound(1); i++) // arrCurrentBlock.GetUpperBound(1) 열 수
+                        {
+                            //  ## : x(i) : 0~2 => 열 반복
+                            // ##  : y(j) : 0~1 => 행 반복
+                            for (int j = 0; j <= arrCurrentBlock.GetUpperBound(0); j++) // arrCurrentBlock.GetUpperBound(0) 행 수
+                            {
+                                if (arrCurrentBlock[j, i] != 0)
+                                {
+                                    arrContainer[y + j, x + i] = arrCurrentBlock[j, i];
+                                }
+                            }
+                        }
+                    }
+                }
 
                 if (shadow)
                 {
                     // 쉐도우 블록
-                    arr[18, 4] = 8;
-                    arr[19, 3] = 8;
-                    arr[19, 4] = 8;
-                    arr[19, 5] = 8; 
+                    arrContainer[18, 4] = 8;
+                    arrContainer[19, 3] = 8;
+                    arrContainer[19, 4] = 8;
+                    arrContainer[19, 5] = 8; 
                 }
 
                 //####
-                arr[19, 6] = 1;
-                arr[19, 7] = 1;
-                arr[19, 8] = 1;
-                arr[19, 9] = 1;
+                arrContainer[19, 6] = 1;
+                arrContainer[19, 7] = 1;
+                arrContainer[19, 8] = 1;
+                arrContainer[19, 9] = 1;
 
                 //##
                 //##
-                arr[17, 8] = 2;
-                arr[17, 9] = 2;
-                arr[18, 8] = 2;
-                arr[18, 9] = 2;
+                arrContainer[17, 8] = 2;
+                arrContainer[17, 9] = 2;
+                arrContainer[18, 8] = 2;
+                arrContainer[18, 9] = 2;
 
-                return arr;
+                return arrContainer;
             }
         }
 
@@ -194,8 +216,10 @@ namespace Textris
                 switch (key)
                 {
                     case Key.Up:
+                        posY--; // 임시
                         break;
                     case Key.Down:
+                        posY++;
                         break;
                     case Key.Left:
                         if (posX > 0)
@@ -204,6 +228,7 @@ namespace Textris
                         }
                         break;
                     case Key.Right:
+                        // 컨테이너 개체의 가로 바운더리 안에서 X 좌표를 이동
                         if (posX < container.GetUpperBound(0))
                         {
                             posX++;
