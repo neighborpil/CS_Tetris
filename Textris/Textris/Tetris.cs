@@ -64,70 +64,7 @@ namespace Textris
         {
             get { return isInGame; }
         }
-
-        /// <summary>
-        /// 게임이 실행될 영역에 대한 2차원 배열(완성된 블록과 현재 떨어지고 있는 블록)
-        /// </summary>
-        public int[,] GameFieldData
-        {
-            get
-            {
-                // 컨테이너 개체와 현재 블록 개체를 임시로 복사
-                //int[,] arrCurrentBlock = new int[20, 10];
-                int[,] arrContainer = (int[,])container.Clone(); //매번 클릭할때마다 새로운 컨테이너를 복사해서 써서 잔상 X
-                int[,] arrCurrentBlock = (int[,])currentBlock.Clone();
-                int x = posX; // 블록의 현재 X 좌표
-                int y = posY; // 블록의 현재 Y 좌표
-
-                // 컨테이너에 현재 위치값에 해당하는 현재 블록을 덮어 쓰기
-                //현재 X 좌표 + 현재 블록의 가로 크기 <= 컨테이너의 X 크기
-                //현재 Y 좌표 + 현재 블록의 세로 크기 <= 컨테이너의 Y 크기
-                if ((x + currentBlock.GetUpperBound(1) <= arrContainer.GetUpperBound(1)))
-                {
-                    if (y + currentBlock.GetUpperBound(0) <= arrContainer.GetUpperBound(0))
-                    {
-                        //해당 컨테이너 내에서 블록을 덮어쓰기 : #### 0-3
-                        for (int i = 0; i <= arrCurrentBlock.GetUpperBound(1); i++) // arrCurrentBlock.GetUpperBound(1) 열 수
-                        {
-                            //  ## : x(i) : 0~2 => 열 반복
-                            // ##  : y(j) : 0~1 => 행 반복
-                            for (int j = 0; j <= arrCurrentBlock.GetUpperBound(0); j++) // arrCurrentBlock.GetUpperBound(0) 행 수
-                            {
-                                if (arrCurrentBlock[j, i] != 0)
-                                {
-                                    arrContainer[y + j, x + i] = arrCurrentBlock[j, i];
-                                }
-                            }
-                        }
-                    }
-                }
-
-                if (shadow)
-                {
-                    // 쉐도우 블록
-                    arrContainer[18, 4] = 8;
-                    arrContainer[19, 3] = 8;
-                    arrContainer[19, 4] = 8;
-                    arrContainer[19, 5] = 8; 
-                }
-
-                //####
-                arrContainer[19, 6] = 1;
-                arrContainer[19, 7] = 1;
-                arrContainer[19, 8] = 1;
-                arrContainer[19, 9] = 1;
-
-                //##
-                //##
-                arrContainer[17, 8] = 2;
-                arrContainer[17, 9] = 2;
-                arrContainer[18, 8] = 2;
-                arrContainer[18, 9] = 2;
-
-                return arrContainer;
-            }
-        }
-
+                
         /// <summary>
         /// Tetris 클래스에서 사용 가능한 키값 열거형
         /// </summary>
@@ -243,5 +180,99 @@ namespace Textris
                 }
             }
         }
+
+        /// <summary>
+        /// 게임이 실행될 영역에 대한 2차원 배열(완성된 블록과 현재 떨어지고 있는 블록)
+        /// </summary>
+        public int[,] GameFieldData
+        {
+            get
+            {
+                // 컨테이너 개체와 현재 블록 개체를 임시로 복사
+                //int[,] arrCurrentBlock = new int[20, 10];
+                int[,] arrContainer = (int[,])container.Clone(); //매번 클릭할때마다 새로운 컨테이너를 복사해서 써서 잔상 X
+                int[,] arrCurrentBlock = (int[,])currentBlock.Clone();
+                int x = posX; // 블록의 현재 X 좌표
+                int y = posY; // 블록의 현재 Y 좌표
+
+                // 현재 실행중인 블록의 색상을 변경
+                for (int i = 0; i <= arrCurrentBlock.GetUpperBound(0); i++)
+                {
+                    for (int j = 0; j <= arrCurrentBlock.GetUpperBound(1); j++)
+                    {
+                        if (arrCurrentBlock[i, j] != 0)
+                        {
+                            arrCurrentBlock[i, j] = 7; //움직이고 있는 동안에는 레드 배경색
+                        }
+                    }
+                }
+
+                // 컨테이너에 현재 위치값에 해당하는 현재 블록을 덮어 쓰기
+                arrContainer = FixBlock(arrContainer, arrCurrentBlock, x, y);
+
+                if (shadow)
+                {
+                    // 쉐도우 블록
+                    arrContainer[18, 4] = 8;
+                    arrContainer[19, 3] = 8;
+                    arrContainer[19, 4] = 8;
+                    arrContainer[19, 5] = 8;
+                }
+
+                //####
+                arrContainer[19, 6] = 1;
+                arrContainer[19, 7] = 1;
+                arrContainer[19, 8] = 1;
+                arrContainer[19, 9] = 1;
+
+                //##
+                //##
+                arrContainer[17, 8] = 2;
+                arrContainer[17, 9] = 2;
+                arrContainer[18, 8] = 2;
+                arrContainer[18, 9] = 2;
+
+                return arrContainer;
+            }
+        }
+
+        #region FixBlock : 컨테이너에 현재 위치값에 해당하는 현재 블록을 덮어 쓰기
+        /// <summary>
+        /// 컨테이너에 현재 위치값에 해당하는 현재 블록을 덮어 쓰기
+        ///  - 현재 X 좌표 + 현재 블록의 가로 크기 : 컨테이너의 X 크기
+        ///  - 현재 Y 좌표 + 현재 블록의 세로 크기 : 컨테이너의 Y 크기
+        /// </summary>
+        /// <param name="arrContainer">게임 필드 영역</param>
+        /// <param name="arrCurrentBlock">하나의 블록 개체</param>
+        /// <param name="x">X 좌표(0 기준)</param>
+        /// <param name="y">Y 좌표(0 기준)</param>
+        /// <returns>컨테이너에 넘겨준 블록 개체를 포함한 2차원 배열</returns>
+        private int[,] FixBlock(int[,] arrContainer, int[,] arrCurrentBlock, int x, int y)
+        {
+            // 컨테이너에 현재 위치값에 해당하는 현재 블록을 덮어 쓰기
+            // 현재 X 좌표 + 현재 블록의 가로 크기 <= 컨테이너의 X 크기
+            // 현재 Y 좌표 + 현재 블록의 세로 크기 <= 컨테이너의 Y 크기
+            if ((x + currentBlock.GetUpperBound(1) <= arrContainer.GetUpperBound(1)))
+            {
+                if (y + currentBlock.GetUpperBound(0) <= arrContainer.GetUpperBound(0))
+                {
+                    //해당 컨테이너 내에서 블록을 덮어쓰기 : #### 0-3
+                    for (int i = 0; i <= arrCurrentBlock.GetUpperBound(1); i++) // arrCurrentBlock.GetUpperBound(1) 열 수
+                    {
+                        //  ## : x(i) : 0~2 => 열 반복
+                        // ##  : y(j) : 0~1 => 행 반복
+                        for (int j = 0; j <= arrCurrentBlock.GetUpperBound(0); j++) // arrCurrentBlock.GetUpperBound(0) 행 수
+                        {
+                            if (arrCurrentBlock[j, i] != 0)
+                            {
+                                arrContainer[y + j, x + i] = arrCurrentBlock[j, i];
+                            }
+                        }
+                    }
+                }
+            }
+            return arrContainer; // 반환
+        } 
+        #endregion
     }
 }
