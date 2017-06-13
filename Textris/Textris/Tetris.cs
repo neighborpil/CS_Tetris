@@ -165,15 +165,17 @@ namespace Textris
                         }
                         break;
                     case Key.Right:
-                        // 컨테이너 개체의 가로 바운더리 안에서 X 좌표를 이동
-                        if (posX < container.GetUpperBound(0))
+                        // 컨테이너 개체의 가로 바운더리 안에서 X 좌표를 이동(???열 길이만큼이기 때문에 (.GetUpperBound(1))
+                        if (posX < container.GetUpperBound(0) - currentBlock.GetUpperBound(0))
                         {
                             posX++;
                         }
                         break;
                     case Key.TurnRight:
+                        currentBlock = Block.RotateRight(currentBlock);
                         break;
                     case Key.TurnLeft:
+                        currentBlock = Block.RotateLeft(currentBlock);
                         break;
                     default:
                         break;
