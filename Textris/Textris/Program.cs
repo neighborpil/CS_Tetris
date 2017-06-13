@@ -112,7 +112,8 @@ a키를 누르면 시작됩니다.
                             t.KeyInput(Tetris.Key.TurnRight);
                             break;
                         case ConsoleKey.G:
-                            Console.WriteLine("완성된 블록 보기 켜고 끄기");
+                            //Console.WriteLine("완성된 블록 보기 켜고 끄기");
+                            t.ShadowBlock = !t.ShadowBlock; // 토글(true => false)
                             break;
                         case ConsoleKey.N:
                             showNext = !showNext; // true <-> false 토클

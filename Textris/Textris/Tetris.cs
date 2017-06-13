@@ -29,7 +29,6 @@ namespace Textris
         /// </summary>
         private int[,] container;
 
-
         /// <summary>
         /// 현재 움직이고 있는(떨어지고 있는) 블록
         /// </summary>
@@ -45,7 +44,19 @@ namespace Textris
         /// </summary>
         private Block generatedBlock = new Block();
 
+        /// <summary>
+        /// 미리보기 블록(고스트 블록, 새도우 블록) 보이기/숨기기 (y/n)
+        /// </summary>
+        private bool shadow;
 
+        /// <summary>
+        /// 고스트 블록을 보일건지 말건지 외부에서 결정시킬 때 사용하는 속성
+        /// </summary>
+        public bool ShadowBlock
+        {
+            get { return shadow; }
+            set { shadow = value; }
+        }
         /// <summary>
         /// 게임 실행 상태 표시(읽기전용)
         /// </summary>
@@ -69,11 +80,14 @@ namespace Textris
                 arr[3, 4] = 7;
                 arr[3, 5] = 7;
 
-                // 쉐도우 블록
-                arr[18, 4] = 8;
-                arr[19, 3] = 8;
-                arr[19, 4] = 8;
-                arr[19, 5] = 8;
+                if (shadow)
+                {
+                    // 쉐도우 블록
+                    arr[18, 4] = 8;
+                    arr[19, 3] = 8;
+                    arr[19, 4] = 8;
+                    arr[19, 5] = 8; 
+                }
 
                 //####
                 arr[19, 6] = 1;
@@ -93,16 +107,6 @@ namespace Textris
         }
 
         /// <summary>
-        /// 다음에 나타날 다음 블록(읽기 전용)
-        /// </summary>
-        public int[,] Next
-        {
-            get
-            {
-                return nextBlock;
-            }
-        }
-        /// <summary>
         /// Tetris 클래스에서 사용 가능한 키값 열거형
         /// </summary>
         public enum Key
@@ -113,13 +117,12 @@ namespace Textris
             Right,
             TurnRight,
             TurnLeft
-        } 
-        #endregion
+        }
 
-        public Tetris() 
+        public Tetris()
             : this(10, 20)
         {
-
+            // Empty
         }
 
         /// <summary>
@@ -129,7 +132,8 @@ namespace Textris
         /// <param name="height">게임 영역의 세로(행) >= 20</param>
         public Tetris(int width, int height)
         {
-            if(width >= 10 && height >= 20)
+            ShadowBlock = true; //고스트 블록 기본으로 보이기
+            if (width >= 10 && height >= 20)
             {
                 container = new int[height, width]; //기본값은 20행 10열짜리 2차원 배열
             }
@@ -138,6 +142,22 @@ namespace Textris
                 throw new Exception("게임 영역은 반드시 10*20 이상이어야 합니다");
             }
         }
+
+        /// <summary>
+        /// 다음에 나타날 다음 블록(읽기 전용)
+        /// </summary>
+        public int[,] Next
+        {
+            get
+            {
+                return nextBlock;
+            }
+        }
+
+
+        #endregion
+
+
 
         /// <summary>
         /// 게임 시작하고 블록을 출력하기
