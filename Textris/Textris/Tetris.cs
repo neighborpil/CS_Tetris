@@ -166,7 +166,7 @@ namespace Textris
                         break;
                     case Key.Right:
                         // 컨테이너 개체의 가로 바운더리 안에서 X 좌표를 이동(???열 길이만큼이기 때문에 (.GetUpperBound(1))
-                        if (posX < container.GetUpperBound(0) - currentBlock.GetUpperBound(0))
+                        if (posX < container.GetUpperBound(1) - currentBlock.GetUpperBound(1))
                         {
                             posX++;
                         }
@@ -197,6 +197,19 @@ namespace Textris
                 int x = posX; // 블록의 현재 X 좌표
                 int y = posY; // 블록의 현재 Y 좌표
 
+                //####
+                arrContainer[19, 6] = 1;
+                arrContainer[19, 7] = 1;
+                arrContainer[19, 8] = 1;
+                arrContainer[19, 9] = 1;
+
+                //##
+                //##
+                arrContainer[17, 8] = 2;
+                arrContainer[17, 9] = 2;
+                arrContainer[18, 8] = 2;
+                arrContainer[18, 9] = 2;
+
                 // 현재 실행중인 블록의 색상을 변경
                 for (int i = 0; i <= arrCurrentBlock.GetUpperBound(0); i++)
                 {
@@ -212,30 +225,45 @@ namespace Textris
                 // 컨테이너에 현재 위치값에 해당하는 현재 블록을 덮어 쓰기
                 arrContainer = FixBlock(arrContainer, arrCurrentBlock, x, y);
 
+                #region 쉐도우 블록 출력하는 영역
+                // 쉐도우 블록/고스트 블록 출력
                 if (shadow)
                 {
-                    // 쉐도우 블록
-                    arrContainer[18, 4] = 8;
-                    arrContainer[19, 3] = 8;
-                    arrContainer[19, 4] = 8;
-                    arrContainer[19, 5] = 8;
+                    // 몇칸 아래에서 고스트 블록을 출력할건지
+                    int add = 10;
+
+                    // 고스트 블록의 색상을 변경
+                    for (int i = 0; i <= arrCurrentBlock.GetUpperBound(0); i++)
+                    {
+                        for (int j = 0; j <= arrCurrentBlock.GetUpperBound(1); j++)
+                        {
+                            if (arrCurrentBlock[i, j] != 0)
+                            {
+                                arrCurrentBlock[i, j] = 8; // 고스트 블록은 회색
+                            }
+                        }
+                    }
+
+                    // 어디까지 블록을 쓸 수 있는지 확인
+                    //while (CanPositionedAt(arrCurrentBlock, posX, posY + add))
+                    //{
+                    //    add++;
+                    //}
+
+                    if (posY + add - 1 > 0) // 최소 아래로 한칸 이상 쓸 수 있을 때만 고스트 블록 출력
+                    {
+                        return (int[,])FixBlock(arrContainer, arrCurrentBlock, posX, posY + add - 1).Clone();
+                    }
                 }
-
-                //####
-                arrContainer[19, 6] = 1;
-                arrContainer[19, 7] = 1;
-                arrContainer[19, 8] = 1;
-                arrContainer[19, 9] = 1;
-
-                //##
-                //##
-                arrContainer[17, 8] = 2;
-                arrContainer[17, 9] = 2;
-                arrContainer[18, 8] = 2;
-                arrContainer[18, 9] = 2;
+                #endregion
 
                 return arrContainer;
             }
+        }
+
+        private bool CanPositionedAt(int[,] arrCurrentBlock, int posX, int v)
+        {
+            throw new NotImplementedException();
         }
 
         #region FixBlock : 컨테이너에 현재 위치값에 해당하는 현재 블록을 덮어 쓰기
