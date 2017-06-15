@@ -156,7 +156,10 @@ namespace Textris
                         posY--; // 임시
                         break;
                     case Key.Down:
-                        posY++;
+                        if(CanPositionedAt(currentBlock, posX, posY + 1))
+                        {
+                            posY++;
+                        }
                         break;
                     case Key.Left:
                         if (posX > 0)
@@ -198,17 +201,17 @@ namespace Textris
                 int y = posY; // 블록의 현재 Y 좌표
 
                 //####
-                arrContainer[19, 6] = 1;
-                arrContainer[19, 7] = 1;
-                arrContainer[19, 8] = 1;
-                arrContainer[19, 9] = 1;
+                arrContainer[09, 6] = 1;
+                arrContainer[09, 7] = 1;
+                arrContainer[09, 8] = 1;
+                arrContainer[09, 9] = 1;
 
                 //##
                 //##
-                arrContainer[17, 8] = 2;
-                arrContainer[17, 9] = 2;
-                arrContainer[18, 8] = 2;
-                arrContainer[18, 9] = 2;
+                arrContainer[07, 8] = 2;
+                arrContainer[07, 9] = 2;
+                arrContainer[08, 8] = 2;
+                arrContainer[08, 9] = 2;
 
                 // 현재 실행중인 블록의 색상을 변경
                 for (int i = 0; i <= arrCurrentBlock.GetUpperBound(0); i++)
@@ -226,45 +229,79 @@ namespace Textris
                 arrContainer = FixBlock(arrContainer, arrCurrentBlock, x, y);
 
                 #region 쉐도우 블록 출력하는 영역
-                // 쉐도우 블록/고스트 블록 출력
-                if (shadow)
-                {
-                    // 몇칸 아래에서 고스트 블록을 출력할건지
-                    int add = 10;
+                //// 쉐도우 블록/고스트 블록 출력
+                //if (shadow)
+                //{
+                //    // 몇칸 아래에서 고스트 블록을 출력할건지
+                //    int add = 10;
 
-                    // 고스트 블록의 색상을 변경
-                    for (int i = 0; i <= arrCurrentBlock.GetUpperBound(0); i++)
-                    {
-                        for (int j = 0; j <= arrCurrentBlock.GetUpperBound(1); j++)
-                        {
-                            if (arrCurrentBlock[i, j] != 0)
-                            {
-                                arrCurrentBlock[i, j] = 8; // 고스트 블록은 회색
-                            }
-                        }
-                    }
+                //    // 고스트 블록의 색상을 변경
+                //    for (int i = 0; i <= arrCurrentBlock.GetUpperBound(0); i++)
+                //    {
+                //        for (int j = 0; j <= arrCurrentBlock.GetUpperBound(1); j++)
+                //        {
+                //            if (arrCurrentBlock[i, j] != 0)
+                //            {
+                //                arrCurrentBlock[i, j] = 8; // 고스트 블록은 회색
+                //            }
+                //        }
+                //    }
 
-                    // 어디까지 블록을 쓸 수 있는지 확인
-                    //while (CanPositionedAt(arrCurrentBlock, posX, posY + add))
-                    //{
-                    //    add++;
-                    //}
+                //    // 어디까지 블록을 쓸 수 있는지 확인
+                //    //while (CanPositionedAt(arrCurrentBlock, posX, posY + add))
+                //    //{
+                //    //    add++;
+                //    //}
 
-                    if (posY + add - 1 > 0) // 최소 아래로 한칸 이상 쓸 수 있을 때만 고스트 블록 출력
-                    {
-                        return (int[,])FixBlock(arrContainer, arrCurrentBlock, posX, posY + add - 1).Clone();
-                    }
-                }
+                //    if (posY + add - 1 > 0) // 최소 아래로 한칸 이상 쓸 수 있을 때만 고스트 블록 출력
+                //    {
+                //        return (int[,])FixBlock(arrContainer, arrCurrentBlock, posX, posY + add - 1).Clone();
+                //    }
+                //}
                 #endregion
 
                 return arrContainer;
             }
         }
 
-        private bool CanPositionedAt(int[,] arrCurrentBlock, int posX, int v)
+        #region 특정 위치에 블록이 들어갈 수 있는지 아닌지를 체크
+        /// <summary>
+        /// 특정 위치에 블록이 들어갈 수 있는지 아닌지를 체크
+        /// </summary>
+        /// <param name="arrBlock">체크할 블록 배열</param>
+        /// <param name="x">X 좌표</param>
+        /// <param name="y">Y 좌표</param>
+        /// <returns>들어갈 수 있으면 참, 아니면 거짓</returns>
+        private bool CanPositionedAt(int[,] arrBlock, int x, int y)
         {
-            throw new NotImplementedException();
-        }
+            // 현재 컨테이너의 복사본 생성
+            int[,] copy = (int[,])container.Clone();
+
+            // 블록은 해당 컨테이너 안에서만 활동 가능
+            if (x + arrBlock.GetUpperBound(1) <= copy.GetUpperBound(1) &&
+                y + arrBlock.GetUpperBound(0) <= copy.GetUpperBound(0))
+            {
+                // 이미 다른 블록이 있는 위치라면?
+                for (int i = 0; i < arrBlock.GetUpperBound(1); i++) // 열반복
+                {
+                    for (int j = 0; j < arrBlock.GetUpperBound(0); j++) // 행반복
+                    {
+                        if (arrBlock[i, j] != 0)
+                        {
+                            if (copy[y + j, x + i] != 0)
+                            {
+                                return false; // 들어갈 수 없다, 이미 블록이 있다
+                            }
+                        }
+                    }
+                }
+                return true;
+            }
+            else
+                return false;
+            return false;
+        } 
+        #endregion
 
         #region FixBlock : 컨테이너에 현재 위치값에 해당하는 현재 블록을 덮어 쓰기
         /// <summary>
