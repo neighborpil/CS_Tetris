@@ -186,6 +186,7 @@ namespace Textris
             }
         }
 
+        #region 게임이 실행될 영역에 대한 2차원 배열(완성된 블록과 현재 떨어지고 있는 블록)
         /// <summary>
         /// 게임이 실행될 영역에 대한 2차원 배열(완성된 블록과 현재 떨어지고 있는 블록)
         /// </summary>
@@ -199,19 +200,6 @@ namespace Textris
                 int[,] arrCurrentBlock = (int[,])currentBlock.Clone();
                 int x = posX; // 블록의 현재 X 좌표
                 int y = posY; // 블록의 현재 Y 좌표
-
-                //####
-                arrContainer[09, 6] = 1;
-                arrContainer[09, 7] = 1;
-                arrContainer[09, 8] = 1;
-                arrContainer[09, 9] = 1;
-
-                //##
-                //##
-                arrContainer[07, 8] = 2;
-                arrContainer[07, 9] = 2;
-                arrContainer[08, 8] = 2;
-                arrContainer[08, 9] = 2;
 
                 // 현재 실행중인 블록의 색상을 변경
                 for (int i = 0; i <= arrCurrentBlock.GetUpperBound(0); i++)
@@ -229,40 +217,45 @@ namespace Textris
                 arrContainer = FixBlock(arrContainer, arrCurrentBlock, x, y);
 
                 #region 쉐도우 블록 출력하는 영역
-                //// 쉐도우 블록/고스트 블록 출력
-                //if (shadow)
-                //{
-                //    // 몇칸 아래에서 고스트 블록을 출력할건지
-                //    int add = 10;
+                // 쉐도우 블록/고스트 블록 출력
+                if (shadow)
+                {
+                    // 몇칸 아래에서 고스트 블록을 출력할건지
+                    int add = 0;
 
-                //    // 고스트 블록의 색상을 변경
-                //    for (int i = 0; i <= arrCurrentBlock.GetUpperBound(0); i++)
-                //    {
-                //        for (int j = 0; j <= arrCurrentBlock.GetUpperBound(1); j++)
-                //        {
-                //            if (arrCurrentBlock[i, j] != 0)
-                //            {
-                //                arrCurrentBlock[i, j] = 8; // 고스트 블록은 회색
-                //            }
-                //        }
-                //    }
+                    #region 고스트 블록의 색상을 변경
+                    // 고스트 블록의 색상을 변경
 
-                //    // 어디까지 블록을 쓸 수 있는지 확인
-                //    //while (CanPositionedAt(arrCurrentBlock, posX, posY + add))
-                //    //{
-                //    //    add++;
-                //    //}
+                    for (int i = 0; i <= arrCurrentBlock.GetUpperBound(0); i++)
+                    {
+                        for (int j = 0; j <= arrCurrentBlock.GetUpperBound(1); j++)
+                        {
+                            if (arrCurrentBlock[i, j] != 0)
+                            {
+                                arrCurrentBlock[i, j] = 8; // 고스트 블록은 회색
+                            }
+                        }
+                    }
+                    #endregion
 
-                //    if (posY + add - 1 > 0) // 최소 아래로 한칸 이상 쓸 수 있을 때만 고스트 블록 출력
-                //    {
-                //        return (int[,])FixBlock(arrContainer, arrCurrentBlock, posX, posY + add - 1).Clone();
-                //    }
-                //}
+                    // 어디까지 블록을 쓸 수 있는지 확인
+                    while (CanPositionedAt(arrCurrentBlock, posX, posY + add))
+                    {
+                        add++;
+                    }
+
+                    if (posY + add - 1 > 0) // 최소 아래로 두칸 이상 쓸 수 있을 때만 고스트 블록 출력
+                    {
+                        //return (int[,])FixBlock(arrContainer, arrCurrentBlock, posX, posY + add - 1).Clone();
+                        arrContainer = FixBlock(arrContainer, arrCurrentBlock, posX, posY + add - 1);
+                    }
+                }
                 #endregion
 
                 return arrContainer;
             }
-        }
+        } 
+        #endregion
 
         #region 특정 위치에 블록이 들어갈 수 있는지 아닌지를 체크
         /// <summary>
@@ -286,7 +279,7 @@ namespace Textris
                 {
                     for (int j = 0; j < arrBlock.GetUpperBound(0); j++) // 행반복
                     {
-                        if (arrBlock[i, j] != 0)
+                        if (arrBlock[j, i] != 0)
                         {
                             if (copy[y + j, x + i] != 0)
                             {
