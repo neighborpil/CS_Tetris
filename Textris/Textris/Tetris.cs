@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Textris
@@ -153,13 +154,14 @@ namespace Textris
                 switch (key)
                 {
                     case Key.Up:
-                        posY--; // 임시
+                        while (CanPositionedAt(currentBlock, posX, posY + 1))
+                        {
+                            Step(); // 쓸 수 있는 만큼 아래로 떨어짐
+                        }
+                        Step(); //완료
                         break;
                     case Key.Down:
-                        if(CanPositionedAt(currentBlock, posX, posY + 1))
-                        {
-                            posY++;
-                        }
+                        Step();
                         break;
                     case Key.Left:
                         if (posX > 0)
@@ -185,6 +187,28 @@ namespace Textris
                 }
             }
         }
+
+        #region Step
+        /// <summary>
+        /// 아래로 한칸 이동할 수 있으면 이동하고, 그렇지 않으면 현재 블록 완료 처리
+        /// </summary>
+        private void Step()
+        {
+            if (isInGame)
+            {
+                if (CanPositionedAt(currentBlock, posX, posY + 1))
+                {
+                    posY++;
+                }
+                else //해당 블록이 완료(아래로 떨어짐)
+                {
+                    //컨테이너를 업데이트
+                    container = FixBlock(container, currentBlock, posX, posY);
+                    GameStart();
+                }
+            }
+        } 
+        #endregion
 
         #region 게임이 실행될 영역에 대한 2차원 배열(완성된 블록과 현재 떨어지고 있는 블록)
         /// <summary>
@@ -275,9 +299,9 @@ namespace Textris
                 y + arrBlock.GetUpperBound(0) <= copy.GetUpperBound(0))
             {
                 // 이미 다른 블록이 있는 위치라면?
-                for (int i = 0; i < arrBlock.GetUpperBound(1); i++) // 열반복
+                for (int i = 0; i <= arrBlock.GetUpperBound(1); i++) // 열반복
                 {
-                    for (int j = 0; j < arrBlock.GetUpperBound(0); j++) // 행반복
+                    for (int j = 0; j <= arrBlock.GetUpperBound(0); j++) // 행반복
                     {
                         if (arrBlock[j, i] != 0)
                         {
