@@ -211,7 +211,7 @@ namespace Textris
                 }
             }
         }
-        1
+        
         #endregion
         #region Step
         /// <summary>
@@ -231,8 +231,62 @@ namespace Textris
                     container = FixBlock(container, currentBlock, posX, posY);
                     GameStart();
                 }
+
+                //한줄이 꽉 찬 행이 있는지 확인
+                int lines = CheckLines();
             }
-        } 
+        }
+
+        /// <summary>
+        /// 한줄이 완성된(꽉찬 라인의 수를 반환하고 해당 라인 삭제)
+        /// </summary>
+        /// <returns></returns>
+        private int CheckLines()
+        {
+            int count = 0;
+
+            // 컨테이너의 행 반복 : 0 ~19
+            for (int i = 0; i <= container.GetUpperBound(0); i++)
+            {
+                bool isFullLIne = true; //꽉 찼다고 가정
+                //컨테이너의 열 반복 : 0 ~ 9
+                for (int j = 0; j <= container.GetUpperBound(1); j++)
+                {
+                    // 열반복하면서 한번이라도 0이 나오면 false
+                    isFullLIne = isFullLIne && container[i, j] != 0; 
+                }
+                // 꽉찬 행이면 해당 라인을 삭제
+                if (isFullLIne)
+                {
+                    //RemoveLine(i);
+                    RemoveLine(i--); // 바로 위에서 떨어진 블록을 한번 더 확인
+                    count++;
+                }
+            }
+            return count;
+        }
+
+        /// <summary>
+        /// 특정 인덱스에 해당하는 라인을 삭제
+        /// </summary>
+        /// <param name="i">Y축 (0 기준)</param>
+        private void RemoveLine(int index)
+        {
+            // 라인을 한칸 아래로 이동
+            for (int i = index; i > 0; i--) //19번째 인덱스(맨 아래)가 꽉 찼다면
+            {
+                for (int j = 0; j <= container.GetUpperBound(1); j++)
+                {
+                    container[i, j] = container[i - 1, j]; //19번째 = 18번째, 18 = 17, ... 1 = 0
+                }
+            }
+
+            // 최 상단(0번째 인덱스) 비우기
+            for (int j = 0; j < container.GetUpperBound(1); j++)
+            {
+                container[0, j] = 0;
+            }
+        }
         #endregion
 
         #region 게임이 실행될 영역에 대한 2차원 배열(완성된 블록과 현재 떨어지고 있는 블록)
