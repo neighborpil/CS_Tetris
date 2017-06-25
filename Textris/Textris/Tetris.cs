@@ -114,11 +114,9 @@ namespace Textris
             }
         }
 
-
         #endregion
 
-
-
+        #region GameStart : 게임 시작하고 블록을 출력하기
         /// <summary>
         /// 게임 시작하고 블록을 출력하기
         /// </summary>
@@ -133,7 +131,15 @@ namespace Textris
             currentBlock = nextBlock != null ? nextBlock : generatedBlock.GetRandomBlock();
             nextBlock = generatedBlock.GetRandomBlock();
 
-        }
+            // 예외 처리 : 더이상 블록을 쓸 수 없으면 게임을 종료
+            if (!CanPositionedAt(currentBlock, posX, posY))
+            {
+                GameEnd();
+            }
+
+        } 
+
+        #endregion
 
         /// <summary>
         /// 게임 종료
@@ -143,12 +149,14 @@ namespace Textris
             this.isInGame = false;
         }
 
+        #region KeyInput : 메인에서 특정 키값을 눌렀을 때 처리해야할 로직 구현
         /// <summary>
         /// 메인에서 특정 키값을 눌렀을 때 처리해야할 로직 구현
         /// </summary>
         /// <param name="key"></param>
         public void KeyInput(Key key)
         {
+            int[,] temp; //회전된 블록을 임시로 담아놓을 그릇
             if (isInGame)
             {
                 switch (key)
@@ -166,28 +174,45 @@ namespace Textris
                     case Key.Left:
                         if (posX > 0)
                         {
-                            posX--; 
+                            if (CanPositionedAt(currentBlock, posX - 1, posY))
+                            {
+                                posX--;
+                            }
                         }
                         break;
                     case Key.Right:
                         // 컨테이너 개체의 가로 바운더리 안에서 X 좌표를 이동(???열 길이만큼이기 때문에 (.GetUpperBound(1))
                         if (posX < container.GetUpperBound(1) - currentBlock.GetUpperBound(1))
                         {
-                            posX++;
+                            if (CanPositionedAt(currentBlock, posX + 1, posY))
+                            {
+                                posX++;
+                            }
                         }
                         break;
                     case Key.TurnRight:
-                        currentBlock = Block.RotateRight(currentBlock);
+                        // 오른쪽으로 회전 할 수 있으면 회전
+                        temp = Block.RotateRight(currentBlock);
+                        if (CanPositionedAt(temp, posX, posY))
+                        {
+                            currentBlock = Block.RotateRight(currentBlock);
+                        }
                         break;
                     case Key.TurnLeft:
-                        currentBlock = Block.RotateLeft(currentBlock);
+                        // 왼쪽으로 회전 할 수 있으면 회전
+                        temp = Block.RotateLeft(currentBlock);
+                        if (CanPositionedAt(temp, posX, posY))
+                        {
+                            currentBlock = Block.RotateLeft(currentBlock);
+                        }
                         break;
                     default:
                         break;
                 }
             }
         }
-
+        1
+        #endregion
         #region Step
         /// <summary>
         /// 아래로 한칸 이동할 수 있으면 이동하고, 그렇지 않으면 현재 블록 완료 처리
