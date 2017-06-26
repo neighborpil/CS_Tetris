@@ -147,6 +147,10 @@ namespace Textris
         public void GameEnd()
         {
             this.isInGame = false;
+
+            //이벤트 발생
+            if (GameOver != null)
+                GameOver();
         }
 
         #region KeyInput : 메인에서 특정 키값을 눌렀을 때 처리해야할 로직 구현
@@ -458,9 +462,19 @@ namespace Textris
         public delegate void LinesDoneHandler(int lines);
 
         /// <summary>
+        /// 게임오버 이벤트를 위한 대리자
+        /// </summary>
+        public delegate void GameOverHandler();
+
+        /// <summary>
         /// [2] 이벤트 : LinesDone
         /// 라인이 완성되었는지 알리는 역할
         /// </summary>
         public event LinesDoneHandler LinesDone;
+
+        /// <summary>
+        /// 게임오버 이벤트
+        /// </summary>
+        public event GameOverHandler GameOver;
     }
 }

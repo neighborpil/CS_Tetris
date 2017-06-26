@@ -95,6 +95,10 @@ a키를 누르면 시작됩니다.
 
             // 이벤트 처리기 등록
             t.LinesDone += T_LinesDone;
+            //t.GameOver += new Tetris.GameOverHandler(T_GameOver); // 공식 코드
+            //t.GameOver += T_GameOver;
+            //t.GameOver += delegate { Console.WriteLine("게임 종료"); }; // 무명(익명) 메소드
+            t.GameOver += () => { Console.WriteLine("게임 종료"); }; //람다식
 
             t.GameStart();
 
@@ -204,6 +208,20 @@ ESC 키를 누르면 종료합니다.
             return; 
             #endregion
         }
+//        /// <summary>
+//        /// 
+//        /// </summary>
+//        private static void T_GameOver()
+//        {
+//            Console.WriteLine(
+//@"
+//=======================
+//게임이 종료되었습니다.
+//=======================
+//"
+//);
+//            Thread.Sleep(3000);
+//        }
 
         /// <summary>
         /// 하나의 라인이 완성될때마다 라인수 증가
