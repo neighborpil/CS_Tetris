@@ -92,6 +92,10 @@ a키를 누르면 시작됩니다.
             // 게임 클래스 초기화 영역
             // t = new Tetris();   // 테트리스 클래스의 인스턴스 생성
             t = new Tetris(10, 20); // 테트리스 클래스의 인스턴스 생성
+
+            // 이벤트 처리기 등록
+            t.LinesDone += T_LinesDone;
+
             t.GameStart();
 
             #region 키보드 처리기
@@ -199,6 +203,15 @@ ESC 키를 누르면 종료합니다.
             // 프로그램 종료
             return; 
             #endregion
+        }
+
+        /// <summary>
+        /// 하나의 라인이 완성될때마다 라인수 증가
+        /// </summary>
+        /// <param name="lines">현재 완성된 라인수</param>
+        private static void T_LinesDone(int lines)
+        {
+            points += lines;
         }
 
         /// <summary>

@@ -234,6 +234,12 @@ namespace Textris
 
                 //한줄이 꽉 찬 행이 있는지 확인
                 int lines = CheckLines();
+
+                //알림을 위한 이벤트 발생
+                if(LinesDone != null)
+                {
+                    LinesDone(lines);
+                }
             }
         }
 
@@ -435,7 +441,26 @@ namespace Textris
                 }
             }
             return arrContainer; // 반환
-        } 
+        }
         #endregion
+
+        // 대리자(delegate)와 이벤트 선언 부
+
+        // 이벤트
+        //  - 개체나 클래스가 알림을 제공 할 수 있게 하는 멤버
+        //  - 클라이언트는 이벤트 처리기를 제공하여 이벤트에 대한 실행 코드를 추가
+
+        /// <summary>
+        /// [1] 대리자 : LinesDonHandler
+        /// 몇개의 라인이 완성되었는지 확인 이벤트
+        /// </summary>
+        /// <param name="lines"></param>
+        public delegate void LinesDoneHandler(int lines);
+
+        /// <summary>
+        /// [2] 이벤트 : LinesDone
+        /// 라인이 완성되었는지 알리는 역할
+        /// </summary>
+        public event LinesDoneHandler LinesDone;
     }
 }
