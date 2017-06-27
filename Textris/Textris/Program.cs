@@ -252,7 +252,9 @@ ESC 키를 누르면 종료합니다.
                 //Thread.Sleep(1000); //1초 대기 
                 // 사용자 입력(위쪽 또는 아래쪽 방향키) 후 1초간 시간차 부여
                 threadCounter = 0;
-                while(threadCounter < 1000) //threadCounter에 의해서 무조건 1초에 한번씩 떨어짐
+                //[1] threadCounter에 의해서 무조건 1초에 한번씩 떨어짐
+                //[2] 한 라인을 맞출수록(1포인트 상승) 5밀리초씩 빨라지는 로직 추가
+                while (threadCounter < (1000 - points * 5) && t.isRunning) 
                 {
                     Thread.Sleep(STEP); // 10 밀리초마다 대기
                     threadCounter += STEP;
