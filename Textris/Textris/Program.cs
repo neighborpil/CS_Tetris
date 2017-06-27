@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using static System.Console;
 /*
 [Textris]
  - 영역 : 가로 10칸, 세로 20칸 점수는 (1, 13)
@@ -117,8 +112,8 @@ a키를 누르면 시작됩니다.
             //t.GameOver += new Tetris.GameOverHandler(T_GameOver); // 공식 코드
             //t.GameOver += T_GameOver;
             //t.GameOver += delegate { Console.WriteLine("게임 종료"); }; // 무명(익명) 메소드
-            t.GameOver += () => { Console.WriteLine("게임 종료"); }; //람다식
-
+            t.GameOver += () => { /*Console.WriteLine("게임 종료");*/ }; //람다식
+            // 람다식은 .net 3.5이상
             t.GameStart();
 
             // Mover 스레드 실행
