@@ -33,6 +33,15 @@ namespace Textris
         /// </summary>
         private static bool drawLock;
 
+        /// <summary>
+        /// 워커 스레드 개수
+        /// </summary>
+        private static int threadCounter = 0; // 0부터 1000까지 반복(STEP 만큼) : 기본 100번 반복
+        /// <summary>
+        /// 하나의 스레드에서 실행할 Step 단위
+        /// </summary>
+        private const int STEP = 10;
+
         #region 블록 그리기 관련 상수들
         private const string BLOCK = "B";
         private const string BOX = "|";
@@ -147,11 +156,17 @@ a키를 누르면 시작됩니다.
                             break;
                         case ConsoleKey.UpArrow:
                             //Console.WriteLine("블록을 아래로 떨어뜨리기");
-                            t.KeyInput(Tetris.Key.Up);
+                            {
+                                t.KeyInput(Tetris.Key.Up);
+                                threadCounter = 0; // 다시 0부터 1000까지 반복
+                            }
                             break;
                         case ConsoleKey.DownArrow:
                             //Console.WriteLine("블록을 아래로 1칸 내리기");
-                            t.KeyInput(Tetris.Key.Down);
+                            {
+                                t.KeyInput(Tetris.Key.Down);
+                                threadCounter = 0; // 다시 0부터 1000까지 반복
+                            }
                             break;
                         case ConsoleKey.LeftArrow:
                             //Console.WriteLine("블록을 왼쪽으로 이동");
@@ -224,13 +239,26 @@ ESC 키를 누르면 종료합니다.
             #endregion
         }
 
+        /// <summary>
+        /// Mover 스레드에서 사용하는 1초에 한번씩 아래로 떨어뜨리는 로직
+        /// </summary>
         private static void Stepper()
         {
             while (t.isRunning)
             {
                 t.Step();
                 DrawField();
-                Thread.Sleep(1000); //1초 대기
+
+                //Thread.Sleep(1000); //1초 대기 
+                // 사용자 입력(위쪽 또는 아래쪽 방향키) 후 1초간 시간차 부여
+                threadCounter = 0;
+                while(threadCounter < 1000) //threadCounter에 의해서 무조건 1초에 한번씩 떨어짐
+                {
+                    Thread.Sleep(STEP); // 10 밀리초마다 대기
+                    threadCounter += STEP;
+                }
+
+
             }
         }
 
