@@ -23,6 +23,16 @@ namespace Textris
         /// </summary>
         private static Tetris t;
 
+        /// <summary>
+        /// 이동 관련 스레드
+        /// </summary>
+        private static Thread mover;
+
+        /// <summary>
+        /// 그리기 함수 잠금 여부
+        /// </summary>
+        private static bool drawLock;
+
         #region 블록 그리기 관련 상수들
         private const string BLOCK = "B";
         private const string BOX = "|";
@@ -88,7 +98,7 @@ a키를 누르면 시작됩니다.
             #region 게임 진행
 
             showNext = true; // 기본으로 다음 블록을 보이기
-
+            drawLock = false; // 제일 처음에는 lock을 걸지 않는다
             // 게임 클래스 초기화 영역
             // t = new Tetris();   // 테트리스 클래스의 인스턴스 생성
             t = new Tetris(10, 20); // 테트리스 클래스의 인스턴스 생성
@@ -101,6 +111,11 @@ a키를 누르면 시작됩니다.
             t.GameOver += () => { Console.WriteLine("게임 종료"); }; //람다식
 
             t.GameStart();
+
+            // Mover 스레드 실행
+            mover = new Thread(new ThreadStart(Stepper));
+            mover.IsBackground = true; // 배경 스레드 활동
+            mover.Start();
 
             #region 키보드 처리기
             //키보드 처리기
@@ -208,20 +223,31 @@ ESC 키를 누르면 종료합니다.
             return; 
             #endregion
         }
-//        /// <summary>
-//        /// 
-//        /// </summary>
-//        private static void T_GameOver()
-//        {
-//            Console.WriteLine(
-//@"
-//=======================
-//게임이 종료되었습니다.
-//=======================
-//"
-//);
-//            Thread.Sleep(3000);
-//        }
+
+        private static void Stepper()
+        {
+            while (t.isRunning)
+            {
+                t.Step();
+                DrawField();
+                Thread.Sleep(1000); //1초 대기
+            }
+        }
+
+        //        /// <summary>
+        //        /// 
+        //        /// </summary>
+        //        private static void T_GameOver()
+        //        {
+        //            Console.WriteLine(
+        //@"
+        //=======================
+        //게임이 종료되었습니다.
+        //=======================
+        //"
+        //);
+        //            Thread.Sleep(3000);
+        //        }
 
         /// <summary>
         /// 하나의 라인이 완성될때마다 라인수 증가
@@ -237,6 +263,13 @@ ESC 키를 누르면 종료합니다.
         /// </summary>
         private static void DrawField()
         {
+            //잠금 기능 구현
+            while (drawLock)
+            {
+                // Empty
+            }
+            drawLock = true;
+
             // 현재 콘솔 내의 커서 위치
             int posX = Console.CursorLeft;
             int posY = Console.CursorTop;
@@ -265,6 +298,9 @@ ESC 키를 누르면 종료합니다.
 
             //다시 처음으로
             Console.SetCursorPosition(posX, posY);
+
+            // 잠금 해제
+            drawLock = false;
         }
 
         

@@ -221,7 +221,7 @@ namespace Textris
         /// <summary>
         /// 아래로 한칸 이동할 수 있으면 이동하고, 그렇지 않으면 현재 블록 완료 처리
         /// </summary>
-        private void Step()
+        public void Step()
         {
             if (isInGame)
             {
